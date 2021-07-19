@@ -14,8 +14,18 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+    void addPoint(double x, double y);
+    void clearData();
+    void plot();
+
+private slots:
+    void on_btn_plot_clicked();
+
+    void on_btn_clear_clicked();
 
 private:
     Ui::MainWindow *ui;
+
+    QVector<double> x_ax, y_ax;
 };
 #endif // MAINWINDOW_H
