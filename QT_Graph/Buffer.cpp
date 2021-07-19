@@ -1,7 +1,7 @@
 #ifndef PROC_BUFFER_CPP
 #define PROC_BUFFER_CPP
 
-#include "Buffer.hpp"
+#include "Buffer.h"
 
 namespace wtk {
 	namespace proc {

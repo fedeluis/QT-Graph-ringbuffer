@@ -1,7 +1,7 @@
 #ifndef PROC_RINGBUFFER_CPP
 #define PROC_RINGBUFFER_CPP
 
-#include "RingBuffer.hpp"
+#include "RingBuffer.h"
 
 namespace wtk {
 	namespace proc {
