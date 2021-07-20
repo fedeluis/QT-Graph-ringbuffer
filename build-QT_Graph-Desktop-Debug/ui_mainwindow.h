@@ -13,6 +13,7 @@
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QPushButton>
+#include <QtWidgets/QSpinBox>
 #include <QtWidgets/QStatusBar>
 #include <QtWidgets/QWidget>
 #include "qcustomplot.h"
@@ -26,6 +27,8 @@ public:
     QPushButton *btn_plot;
     QPushButton *btn_clear;
     QCustomPlot *plot;
+    QSpinBox *spin_x_axis;
+    QSpinBox *spin_y_axis;
     QStatusBar *statusbar;
 
     void setupUi(QMainWindow *MainWindow)
@@ -44,6 +47,17 @@ public:
         plot = new QCustomPlot(centralwidget);
         plot->setObjectName(QString::fromUtf8("plot"));
         plot->setGeometry(QRect(40, 50, 691, 351));
+        spin_x_axis = new QSpinBox(centralwidget);
+        spin_x_axis->setObjectName(QString::fromUtf8("spin_x_axis"));
+        spin_x_axis->setGeometry(QRect(40, 440, 181, 26));
+        spin_x_axis->setMinimum(1);
+        spin_x_axis->setMaximum(10);
+        spin_y_axis = new QSpinBox(centralwidget);
+        spin_y_axis->setObjectName(QString::fromUtf8("spin_y_axis"));
+        spin_y_axis->setGeometry(QRect(240, 440, 171, 26));
+        spin_y_axis->setMinimum(10);
+        spin_y_axis->setMaximum(200);
+        spin_y_axis->setSingleStep(10);
         MainWindow->setCentralWidget(centralwidget);
         statusbar = new QStatusBar(MainWindow);
         statusbar->setObjectName(QString::fromUtf8("statusbar"));
