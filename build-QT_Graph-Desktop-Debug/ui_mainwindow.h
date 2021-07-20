@@ -11,6 +11,7 @@
 
 #include <QtCore/QVariant>
 #include <QtWidgets/QApplication>
+#include <QtWidgets/QLineEdit>
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QSpinBox>
@@ -29,6 +30,9 @@ public:
     QCustomPlot *plot;
     QSpinBox *spin_x_axis;
     QSpinBox *spin_y_axis;
+    QPushButton *btn_rescale;
+    QLineEdit *lineEdit_X;
+    QLineEdit *lineEdit_Y;
     QStatusBar *statusbar;
 
     void setupUi(QMainWindow *MainWindow)
@@ -58,6 +62,17 @@ public:
         spin_y_axis->setMinimum(10);
         spin_y_axis->setMaximum(200);
         spin_y_axis->setSingleStep(10);
+        btn_rescale = new QPushButton(centralwidget);
+        btn_rescale->setObjectName(QString::fromUtf8("btn_rescale"));
+        btn_rescale->setGeometry(QRect(40, 480, 89, 25));
+        lineEdit_X = new QLineEdit(centralwidget);
+        lineEdit_X->setObjectName(QString::fromUtf8("lineEdit_X"));
+        lineEdit_X->setGeometry(QRect(40, 410, 113, 25));
+        lineEdit_Y = new QLineEdit(centralwidget);
+        lineEdit_Y->setObjectName(QString::fromUtf8("lineEdit_Y"));
+        lineEdit_Y->setEnabled(true);
+        lineEdit_Y->setGeometry(QRect(240, 410, 113, 25));
+        lineEdit_Y->setReadOnly(false);
         MainWindow->setCentralWidget(centralwidget);
         statusbar = new QStatusBar(MainWindow);
         statusbar->setObjectName(QString::fromUtf8("statusbar"));
@@ -73,6 +88,9 @@ public:
         MainWindow->setWindowTitle(QApplication::translate("MainWindow", "MainWindow", nullptr));
         btn_plot->setText(QApplication::translate("MainWindow", "Plot", nullptr));
         btn_clear->setText(QApplication::translate("MainWindow", "Clear", nullptr));
+        btn_rescale->setText(QApplication::translate("MainWindow", "Rescale", nullptr));
+        lineEdit_X->setText(QApplication::translate("MainWindow", "X Axis", nullptr));
+        lineEdit_Y->setText(QApplication::translate("MainWindow", "Y Axis", nullptr));
     } // retranslateUi
 
 };

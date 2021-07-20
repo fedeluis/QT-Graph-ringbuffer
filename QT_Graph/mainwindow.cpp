@@ -41,14 +41,6 @@ void MainWindow::addPoint(double x, double y) {
     y_ax.append(y);
 }
 void MainWindow::plot() {
-    // aggiornamento assi
-    if(ui->spin_x_axis->value()!=current_x)
-        current_x=ui->spin_x_axis->value();
-    if(ui->spin_y_axis->value()!=current_y)
-        current_y=ui->spin_y_axis->value();
-    ui->plot->xAxis->setRange(0,current_x);
-    ui->plot->yAxis->setRange(-current_y,current_y);
-
     // inserisco nuovi punti in grafico
     ui->plot->graph(0)->setData(x_ax, y_ax);
     // aggiorno grafico
@@ -58,4 +50,25 @@ void MainWindow::plot() {
 void MainWindow::clearData() {
     x_ax.clear();
     y_ax.clear();
+}
+
+void MainWindow::on_btn_rescale_clicked() {
+    bool axis_update=false;
+    // aggiornamento assi
+    if(ui->spin_x_axis->value()!=current_x) {
+        current_x=ui->spin_x_axis->value();
+        axis_update=true;
+    }
+    if(ui->spin_y_axis->value()!=current_y) {
+        current_y=ui->spin_y_axis->value();
+        axis_update=true;
+    }
+    if(axis_update) {
+        ui->plot->xAxis->setRange(0,current_x);
+        ui->plot->yAxis->setRange(-current_y,current_y);
+    }
+
+    // aggiorno grafico
+    ui->plot->replot();
+    ui->plot->update();
 }

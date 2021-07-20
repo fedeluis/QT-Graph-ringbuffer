@@ -4,7 +4,7 @@
 #include <string>
 #include <iostream>
 #include <math.h>
-#include <Eigen/Dense>
+#include <eigen3/Eigen/Dense>
 
 #include <wtkcore/Exception.hpp>
 #include "proc_utilities.hpp"
