@@ -3,13 +3,49 @@
 
 // salvo valori assi xx ed y
 int current_x=5; // 5 secondi
-int current_y=50; // 50 microvolt
+int current_y=10; // 50 microvolt
+
+int numero=3;
+
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow) {
 
     ui->setupUi(this);
+/*  TENTATIVO GRAFICO MULTIPLO
+ *  NON FUNZIONANTE
+    ui->plot->plotLayout()->clear();
+
+    QCPAxisRect *wideAxisRect[numero];
+    QCPGraph *graf[numero];
+
+    for(int i=0;i<numero;i++) {
+        wideAxisRect[i]= new QCPAxisRect(ui->plot);
+        wideAxisRect[i]->setupFullAxesBox(true);
+
+
+        QCPAxis *x = new QCPAxis(wideAxisRect[i],QCPAxis::atBottom);
+        x->setRange(0,current_x);
+        QCPAxis *y = new QCPAxis(wideAxisRect[i],QCPAxis::atBottom);
+        y->setRange(-current_y,current_y);
+
+        ui->plot->plotLayout()->addElement(i, 0, wideAxisRect[i]);
+        graf[i] = ui->plot->addGraph(x, y);
+        graf[i]->keyAxis()->setRange(0,current_x);
+        graf[i]->valueAxis()->setRange(-current_y,current_y);
+        // richiamo rescale
+        //on_btn_rescale_clicked();
+    }
+
+    QCPLayoutGrid *gridLayout = new QCPLayoutGrid; // contenitore per subgraphs
+*/
+
+
+
+
+
+
 
     /*
      * Grafico
@@ -19,6 +55,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->plot->graph(0)->setLineStyle(QCPGraph::lsLine);
     ui->plot->xAxis->setRange(0,current_x);
     ui->plot->yAxis->setRange(-current_y,current_y);
+
 }
 
 MainWindow::~MainWindow() {
@@ -37,19 +74,19 @@ void MainWindow::on_btn_clear_clicked() {
 
 void MainWindow::addPoint(double x, double y) {
     // inserisco coordinate nuovo punto nei vettori
-    x_ax.append(x);
-    y_ax.append(y);
+    data_x.append(x);
+    data_y.append(y);
 }
 void MainWindow::plot() {
     // inserisco nuovi punti in grafico
-    ui->plot->graph(0)->setData(x_ax, y_ax);
+    ui->plot->graph(0)->setData(data_x, data_y);
     // aggiorno grafico
     ui->plot->replot();
     ui->plot->update();
 }
 void MainWindow::clearData() {
-    x_ax.clear();
-    y_ax.clear();
+    data_x.clear();
+    data_y.clear();
 }
 
 void MainWindow::on_btn_rescale_clicked() {
@@ -64,10 +101,21 @@ void MainWindow::on_btn_rescale_clicked() {
         axis_update=true;
     }
     if(axis_update) {
-        ui->plot->xAxis->setRange(0,current_x);
-        ui->plot->yAxis->setRange(-current_y,current_y);
+        for(int i=0;i<3;i++) {
+            //QCPAxis *x = new QCPAxis(wideAxisRect[i],QCPAxis::atBottom);
+            //x->setRange(0,current_x);
+            //QCPAxis *y = new QCPAxis(wideAxisRect[i],QCPAxis::atBottom);
+            //y->setRange(-current_y,current_y);
+
+            //ui->plot->graph(i)->setKeyAxis(x);
+            //ui->plot->graph(i)->setValueAxis(y);
+        }
+        //ui->plot->xAxis->setRange(0,current_x);
+        //ui->plot->yAxis->setRange(-current_y,current_y);
     }
 
+    ui->plot->xAxis->setRange(0,current_x);
+    ui->plot->yAxis->setRange(-current_y,current_y);
     // aggiorno grafico
     ui->plot->replot();
     ui->plot->update();

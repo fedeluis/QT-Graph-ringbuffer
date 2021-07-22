@@ -37,6 +37,6 @@ private:
 
     /*! \brief  Vectors where point are stored
      */
-    QVector<double> x_ax, y_ax;
+    QVector<double> data_x, data_y;
 };
 #endif // MAINWINDOW_H
