@@ -52,11 +52,13 @@ OBJECTS_DIR   = ./
 
 ####### Files
 
-SOURCES       = ../QT_Graph/main.cpp \
+SOURCES       = ../QT_Graph/RingBuffer.cpp \
+		../QT_Graph/main.cpp \
 		../QT_Graph/mainwindow.cpp \
 		../QT_Graph/qcustomplot.cpp moc_mainwindow.cpp \
 		moc_qcustomplot.cpp
-OBJECTS       = main.o \
+OBJECTS       = RingBuffer.o \
+		main.o \
 		mainwindow.o \
 		qcustomplot.o \
 		moc_mainwindow.o \
@@ -151,9 +153,10 @@ DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/exceptions.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/yacc.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/lex.prf \
-		../QT_Graph/QT_Graph.pro RingBuffer.h \
+		../QT_Graph/QT_Graph.pro ../QT_Graph/RingBuffer.hpp \
 		../QT_Graph/mainwindow.h \
-		../QT_Graph/qcustomplot.h ../QT_Graph/main.cpp \
+		../QT_Graph/qcustomplot.h ../QT_Graph/RingBuffer.cpp \
+		../QT_Graph/main.cpp \
 		../QT_Graph/mainwindow.cpp \
 		../QT_Graph/qcustomplot.cpp
 QMAKE_TARGET  = QT_Graph
@@ -365,8 +368,8 @@ distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/data/dummy.cpp $(DISTDIR)/
-	$(COPY_FILE) --parents RingBuffer.h ../QT_Graph/mainwindow.h ../QT_Graph/qcustomplot.h $(DISTDIR)/
-	$(COPY_FILE) --parents ../QT_Graph/main.cpp ../QT_Graph/mainwindow.cpp ../QT_Graph/qcustomplot.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents ../QT_Graph/RingBuffer.hpp ../QT_Graph/mainwindow.h ../QT_Graph/qcustomplot.h $(DISTDIR)/
+	$(COPY_FILE) --parents ../QT_Graph/RingBuffer.cpp ../QT_Graph/main.cpp ../QT_Graph/mainwindow.cpp ../QT_Graph/qcustomplot.cpp $(DISTDIR)/
 	$(COPY_FILE) --parents ../QT_Graph/mainwindow.ui $(DISTDIR)/
 
 
@@ -433,6 +436,9 @@ compiler_lex_clean:
 compiler_clean: compiler_moc_predefs_clean compiler_moc_header_clean compiler_uic_clean 
 
 ####### Compile
+
+RingBuffer.o: ../QT_Graph/RingBuffer.cpp ../QT_Graph/RingBuffer.hpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o RingBuffer.o ../QT_Graph/RingBuffer.cpp
 
 main.o: ../QT_Graph/main.cpp ../QT_Graph/mainwindow.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o ../QT_Graph/main.cpp
