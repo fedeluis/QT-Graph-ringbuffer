@@ -42,6 +42,7 @@ namespace rbuf {
 
         if(inChannels!=bufChannels) {
             // TODO: inserire errore grandezza canali ed uscire
+            throw std::invalid_argument("Input invalid in function add()\nThe lenght of the channels is not the same!");
         }
 
         unsigned int inSamples=in.rows();
@@ -84,6 +85,7 @@ namespace rbuf {
 
         if(outChannels!=bufChannels) {
             // TODO: inserire errore grandezza canali ed uscire
+            throw std::invalid_argument("Input invalid in function get()\nThe lenght of the channels is not the same!");
         }
 
         // formulazione generale, out dovrebbe essere vettore

@@ -4,6 +4,7 @@
 #include <eigen3/Eigen/Dense>
 #include <thread>   // std::thread
 #include <mutex>    // std::mutex
+#include <stdexcept>
 
 namespace rbuf {
     /*! \brief This class implements a ring circular buffer
@@ -33,18 +34,15 @@ namespace rbuf {
 
             /*! \brief  Add data frame to the buffer
              *  \param  in  Frame of data in the format of [samples x channels]
+             *  \throws std::invalid_argument
              */
             void add(const Eigen::Ref<const Eigen::MatrixXd>& in);
 
             /*! \brief  Method to return data to the buffer
              *  \param  out Reference to the data stored in the buffer
+             *  \throws std::invalid_argument
              */
             void get(Eigen::Ref<Eigen::MatrixXd> out);
-
-            /*! \brief 	Check if buffer entries are not all set to 0
-		     *  \return True if is full, False otherwise
-		     */
-		    bool isFull(void);
 
         private:
             /*! \brief  Ringbuffer data
