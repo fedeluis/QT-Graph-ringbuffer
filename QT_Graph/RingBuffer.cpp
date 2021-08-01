@@ -1,4 +1,5 @@
-// TODO: aggiungere #ifndef, ecc
+#ifndef RBUF_RINGBUFFER_CPP
+#define RBUF_RINGBUFFER_CPP
 
 #include "RingBuffer.hpp"
 
@@ -6,9 +7,13 @@ namespace rbuf {
 
     RingBuffer::RingBuffer(unsigned int num_samples, unsigned int num_channels) {
         if(num_samples<=0 || num_channels<=0) {
-            // TODO: inserire errore da catturare nel main
-            // oppure ciclo do-while interno al costruttore per far
-            // reinserire valori
+            do {
+                printf("Invalid input for data structure parameters!\n");
+                printf("Insert a new valid number of samples [1,N]: ");
+                scanf("%u", &num_samples);
+                printf("\nInsert a new valid number of channels [1,N]: ");
+                scanf("%u", &num_channels);
+            } while(num_samples<=0 || num_channels<=0);
         }
         this->_buffer=Eigen::MatrixXd(num_samples, num_channels);
 
@@ -41,7 +46,6 @@ namespace rbuf {
         unsigned int bufChannels=this->getChannels();
 
         if(inChannels!=bufChannels) {
-            // TODO: inserire errore grandezza canali ed uscire
             throw std::invalid_argument("Input invalid in function add()\nThe lenght of the channels is not the same!");
         }
 
@@ -84,7 +88,6 @@ namespace rbuf {
         unsigned int bufChannels=this->getChannels();
 
         if(outChannels!=bufChannels) {
-            // TODO: inserire errore grandezza canali ed uscire
             throw std::invalid_argument("Input invalid in function get()\nThe lenght of the channels is not the same!");
         }
 
@@ -125,3 +128,4 @@ namespace rbuf {
     }
 }
 
+#endif

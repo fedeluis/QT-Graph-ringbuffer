@@ -4,7 +4,8 @@
 #include <eigen3/Eigen/Dense>
 #include <thread>   // std::thread
 #include <mutex>    // std::mutex
-#include <stdexcept>
+#include <stdexcept>    // std::invalid_argument
+#include <stdio.h>
 
 namespace rbuf {
     /*! \brief This class implements a ring circular buffer
