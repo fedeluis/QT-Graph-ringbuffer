@@ -17,13 +17,21 @@ public:
      *  \param  x   Coordinate for X-axis
      *  \param  y   Coordinate for Y-axis
      */
-    void addPoint(double x, double y);
+    void addPoint(double x, double* y);
     /*! \brief Clear all points on the graph
      */
     void clearData();
     /*! \brief  Updates graph with new points
      */
     void plot();
+    /*! \brief  Set number of channels
+     *  \param  n   number of channels
+     */
+    void setChannels(int n);
+    /*! \brief  Set number of samples
+     *  \param  n   number of samples
+     */
+    void setSamples(int n);
 
 private slots:
     void on_btn_plot_clicked();
@@ -38,5 +46,12 @@ private:
     /*! \brief  Vectors where point are stored
      */
     QVector<double> data_x, data_y;
+
+    /*! \brief  Number of channels
+     */
+    int channels;
+    /*! \brief  Number of samples
+     */
+    int samples;
 };
 #endif // MAINWINDOW_H
