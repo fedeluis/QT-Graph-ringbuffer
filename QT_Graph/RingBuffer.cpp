@@ -15,7 +15,7 @@ namespace rbuf {
                 scanf("%u", &num_channels);
             } while(num_samples<=0 || num_channels<=0);
         }
-        this->_buffer=Eigen::MatrixXd(num_samples, num_channels);
+        this->_buffer=Eigen::MatrixXd(num_channels,num_samples);
 
         this->nsamples=num_samples;
         this->nchannels=num_channels;
@@ -42,14 +42,14 @@ namespace rbuf {
     }
 
     void RingBuffer::add(const Eigen::Ref<const Eigen::MatrixXd>& in) {
-        unsigned int inChannels=in.cols();
+        unsigned int inChannels=in.rows();
         unsigned int bufChannels=this->getChannels();
 
         if(inChannels!=bufChannels) {
             throw std::invalid_argument("Input invalid in function add()\nThe lenght of the channels is not the same!");
         }
 
-        unsigned int inSamples=in.rows();
+        unsigned int inSamples=in.cols();
         unsigned int bufSamples=this->getSamples();
         /**
          * Colonna per colonna inserisco i dati in _buffer, controllando di non
@@ -61,7 +61,7 @@ namespace rbuf {
                 this->allow_write=false;
                 this->write_mtx.lock();  // in attesa fino a sblocco in RingBuffer::get()
             }
-            this->_buffer.block(0,this->add_index,bufChannels,1)=in.block(0,i,inChannels,1);
+            this->_buffer.block(0,this->add_index,bufChannels,1) = in.block(0,i,inChannels,1);
             /**
              * aggiornamento contatore ad anello per inserimento
              * 
@@ -84,7 +84,7 @@ namespace rbuf {
     }
 
     void RingBuffer::get(Eigen::Ref<Eigen::MatrixXd> out) {
-        unsigned int outChannels=out.cols();
+        unsigned int outChannels=out.rows();
         unsigned int bufChannels=this->getChannels();
 
         if(outChannels!=bufChannels) {
@@ -92,7 +92,7 @@ namespace rbuf {
         }
 
         // formulazione generale, out dovrebbe essere vettore
-        unsigned int outSamples=out.rows();
+        unsigned int outSamples=out.cols();
         unsigned int bufSamples=this->getSamples();
         
         //Aspetto inserimento primo valore per poter cominciare a leggere
@@ -109,7 +109,7 @@ namespace rbuf {
                 this->allow_read=false;
                 this->read_mtx.lock();  // in attesa fino a sblocco in RingBuffer::add()
             }
-            out.block(0,i,outChannels,1)=this->_buffer.block(0,this->get_index,bufChannels,1);
+            out.block(0,i,outChannels,1) = this->_buffer.block(0,this->get_index,bufChannels,1);
 
             if(this->get_index+1==bufSamples)
                 this->get_index=0;

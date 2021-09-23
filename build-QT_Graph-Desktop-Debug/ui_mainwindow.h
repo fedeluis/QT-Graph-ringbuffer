@@ -25,7 +25,6 @@ class Ui_MainWindow
 {
 public:
     QWidget *centralwidget;
-    QPushButton *btn_plot;
     QPushButton *btn_clear;
     QCustomPlot *plot;
     QSpinBox *spin_x_axis;
@@ -42,9 +41,6 @@ public:
         MainWindow->resize(800, 600);
         centralwidget = new QWidget(MainWindow);
         centralwidget->setObjectName(QString::fromUtf8("centralwidget"));
-        btn_plot = new QPushButton(centralwidget);
-        btn_plot->setObjectName(QString::fromUtf8("btn_plot"));
-        btn_plot->setGeometry(QRect(510, 440, 89, 25));
         btn_clear = new QPushButton(centralwidget);
         btn_clear->setObjectName(QString::fromUtf8("btn_clear"));
         btn_clear->setGeometry(QRect(640, 440, 89, 25));
@@ -56,12 +52,14 @@ public:
         spin_x_axis->setGeometry(QRect(40, 440, 181, 26));
         spin_x_axis->setMinimum(1);
         spin_x_axis->setMaximum(10);
+        spin_x_axis->setValue(10);
         spin_y_axis = new QSpinBox(centralwidget);
         spin_y_axis->setObjectName(QString::fromUtf8("spin_y_axis"));
         spin_y_axis->setGeometry(QRect(240, 440, 171, 26));
         spin_y_axis->setMinimum(10);
         spin_y_axis->setMaximum(200);
         spin_y_axis->setSingleStep(10);
+        spin_y_axis->setValue(20);
         btn_rescale = new QPushButton(centralwidget);
         btn_rescale->setObjectName(QString::fromUtf8("btn_rescale"));
         btn_rescale->setGeometry(QRect(40, 480, 89, 25));
@@ -86,7 +84,6 @@ public:
     void retranslateUi(QMainWindow *MainWindow)
     {
         MainWindow->setWindowTitle(QApplication::translate("MainWindow", "MainWindow", nullptr));
-        btn_plot->setText(QApplication::translate("MainWindow", "Plot", nullptr));
         btn_clear->setText(QApplication::translate("MainWindow", "Clear", nullptr));
         btn_rescale->setText(QApplication::translate("MainWindow", "Rescale", nullptr));
         lineEdit_X->setText(QApplication::translate("MainWindow", "X Axis", nullptr));
