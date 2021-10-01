@@ -2,10 +2,11 @@
 #include "RingBuffer.hpp"
 #include <QApplication>
 #include <stdlib.h> // rand
+#include <unistd.h>
 
 int channels = 4;
-int samples = 100;
-double freq = 10;
+int samples = 68;
+double freq = 4;
 
 int main(int argc, char *argv[])
 {

@@ -11,7 +11,8 @@
 
 #include <QtCore/QVariant>
 #include <QtWidgets/QApplication>
-#include <QtWidgets/QLineEdit>
+#include <QtWidgets/QComboBox>
+#include <QtWidgets/QLabel>
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QSpinBox>
@@ -30,8 +31,11 @@ public:
     QSpinBox *spin_x_axis;
     QSpinBox *spin_y_axis;
     QPushButton *btn_rescale;
-    QLineEdit *lineEdit_X;
-    QLineEdit *lineEdit_Y;
+    QLabel *label;
+    QLabel *label_2;
+    QLabel *label_3;
+    QComboBox *combo_graph;
+    QPushButton *btn_graph;
     QStatusBar *statusbar;
 
     void setupUi(QMainWindow *MainWindow)
@@ -62,15 +66,23 @@ public:
         spin_y_axis->setValue(20);
         btn_rescale = new QPushButton(centralwidget);
         btn_rescale->setObjectName(QString::fromUtf8("btn_rescale"));
-        btn_rescale->setGeometry(QRect(40, 480, 89, 25));
-        lineEdit_X = new QLineEdit(centralwidget);
-        lineEdit_X->setObjectName(QString::fromUtf8("lineEdit_X"));
-        lineEdit_X->setGeometry(QRect(40, 410, 113, 25));
-        lineEdit_Y = new QLineEdit(centralwidget);
-        lineEdit_Y->setObjectName(QString::fromUtf8("lineEdit_Y"));
-        lineEdit_Y->setEnabled(true);
-        lineEdit_Y->setGeometry(QRect(240, 410, 113, 25));
-        lineEdit_Y->setReadOnly(false);
+        btn_rescale->setGeometry(QRect(430, 414, 89, 51));
+        label = new QLabel(centralwidget);
+        label->setObjectName(QString::fromUtf8("label"));
+        label->setGeometry(QRect(40, 490, 121, 17));
+        label_2 = new QLabel(centralwidget);
+        label_2->setObjectName(QString::fromUtf8("label_2"));
+        label_2->setEnabled(true);
+        label_2->setGeometry(QRect(40, 410, 67, 17));
+        label_3 = new QLabel(centralwidget);
+        label_3->setObjectName(QString::fromUtf8("label_3"));
+        label_3->setGeometry(QRect(240, 410, 67, 17));
+        combo_graph = new QComboBox(centralwidget);
+        combo_graph->setObjectName(QString::fromUtf8("combo_graph"));
+        combo_graph->setGeometry(QRect(170, 490, 101, 25));
+        btn_graph = new QPushButton(centralwidget);
+        btn_graph->setObjectName(QString::fromUtf8("btn_graph"));
+        btn_graph->setGeometry(QRect(290, 490, 101, 25));
         MainWindow->setCentralWidget(centralwidget);
         statusbar = new QStatusBar(MainWindow);
         statusbar->setObjectName(QString::fromUtf8("statusbar"));
@@ -86,8 +98,10 @@ public:
         MainWindow->setWindowTitle(QApplication::translate("MainWindow", "MainWindow", nullptr));
         btn_clear->setText(QApplication::translate("MainWindow", "Clear", nullptr));
         btn_rescale->setText(QApplication::translate("MainWindow", "Rescale", nullptr));
-        lineEdit_X->setText(QApplication::translate("MainWindow", "X Axis", nullptr));
-        lineEdit_Y->setText(QApplication::translate("MainWindow", "Y Axis", nullptr));
+        label->setText(QApplication::translate("MainWindow", "Graph selection:", nullptr));
+        label_2->setText(QApplication::translate("MainWindow", "X Axis", nullptr));
+        label_3->setText(QApplication::translate("MainWindow", "Y Axis", nullptr));
+        btn_graph->setText(QApplication::translate("MainWindow", "Select graph", nullptr));
     } // retranslateUi
 
 };

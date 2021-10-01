@@ -81,46 +81,79 @@
    <widget class="QPushButton" name="btn_rescale">
     <property name="geometry">
      <rect>
-      <x>40</x>
-      <y>480</y>
+      <x>430</x>
+      <y>414</y>
       <width>89</width>
-      <height>25</height>
+      <height>51</height>
      </rect>
     </property>
     <property name="text">
      <string>Rescale</string>
     </property>
    </widget>
-   <widget class="QLineEdit" name="lineEdit_X">
+   <widget class="QLabel" name="label">
+    <property name="geometry">
+     <rect>
+      <x>40</x>
+      <y>490</y>
+      <width>121</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Graph selection:</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_2">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
     <property name="geometry">
      <rect>
       <x>40</x>
       <y>410</y>
-      <width>113</width>
-      <height>25</height>
+      <width>67</width>
+      <height>17</height>
      </rect>
     </property>
     <property name="text">
      <string>X Axis</string>
     </property>
    </widget>
-   <widget class="QLineEdit" name="lineEdit_Y">
-    <property name="enabled">
-     <bool>true</bool>
-    </property>
+   <widget class="QLabel" name="label_3">
     <property name="geometry">
      <rect>
       <x>240</x>
       <y>410</y>
-      <width>113</width>
-      <height>25</height>
+      <width>67</width>
+      <height>17</height>
      </rect>
     </property>
     <property name="text">
      <string>Y Axis</string>
     </property>
-    <property name="readOnly">
-     <bool>false</bool>
+   </widget>
+   <widget class="QComboBox" name="combo_graph">
+    <property name="geometry">
+     <rect>
+      <x>170</x>
+      <y>490</y>
+      <width>101</width>
+      <height>25</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="btn_graph">
+    <property name="geometry">
+     <rect>
+      <x>290</x>
+      <y>490</y>
+      <width>101</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Select graph</string>
     </property>
    </widget>
   </widget>

@@ -41,6 +41,8 @@ private slots:
 
     void on_btn_rescale_clicked();
 
+    void on_btn_graph_clicked();
+
 private:
 
     Ui::MainWindow *ui;

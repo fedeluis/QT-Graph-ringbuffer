@@ -4,12 +4,11 @@
 #include <stdlib.h> // rand
 
 // salvo valori assi x ed y
-int current_x=10;   // 10 secondi
+double current_x=10;   // 10 secondi
 int current_y=20;   // 20 microvolt
 
 bool buffer_isfull=false;   // false default
 double vertline_index=0;    //index for vertical line
-//unsigned int add_index=0;   // index where to add new data in buffer
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -50,15 +49,26 @@ void MainWindow::graphSetup() {
         // salvo posizioni asse y in (# channels) vettori
         QVector<double> data;
         this->list.append(data);
+
+        // adding items in combo box
+        QString str = "Channel ";
+        str.append(QString::number(i+1));
+        ui->combo_graph->addItem(str);
     }
     // salvo posizioni asse x in unico vettore
     QVector<double> data_x;
     this->list.append(data_x);
 
+    // final item in combo box
+    ui->combo_graph->addItem("All");
+
     // vertical line for updating
     ui->plot->addGraph();
     ui->plot->graph(this->channels)->setScatterStyle(QCPScatterStyle::ssNone);
     ui->plot->graph(this->channels)->setLineStyle(QCPGraph::lsLine);
+    color.setNamedColor("#000000");
+    pen.setColor(color);
+    ui->plot->graph(this->channels)->setPen(pen);
 
     ui->plot->xAxis->setLabel("time");
     ui->plot->yAxis->setLabel("EEG signal");
@@ -93,9 +103,14 @@ void MainWindow::plot(double x, double* y) {
     }
     // adding new points
     else {
+
         // check if buffer is full
-        if( (!buffer_isfull) && ( this->list[this->channels].size() == this->samples)) {
+        if( (!buffer_isfull) && (x>current_x) ) {
             buffer_isfull=true;
+        }
+        // update x axis for the plot (if it's out of bound)
+        while(x>=current_x) {
+            x = x-current_x;
         }
         // full buffer case
         if(buffer_isfull) {
@@ -103,14 +118,11 @@ void MainWindow::plot(double x, double* y) {
                 this->list[i].removeFirst();
             }
         }
-        // not full buffer case
-        else {
-            this->list[this->channels].append(x);
-            for(int i=0;i<this->channels;i++) {
-                this->list[i].append(y[i]);
-
-                ui->plot->graph(i)->setData(this->list[this->channels],this->list[i]);
-            }
+        // standard case
+        this->list[this->channels].append(x);
+        for(int i=0;i<this->channels;i++) {
+            this->list[i].append(y[i]);
+            ui->plot->graph(i)->setData(this->list[this->channels],this->list[i]);
         }
 
         // vertical line update
@@ -126,6 +138,7 @@ void MainWindow::plot(double x, double* y) {
 
 void MainWindow::on_btn_rescale_clicked() {
     bool axis_update=false;
+    double previous_x=current_x;
 
     // aggiornamento asse x
     if(ui->spin_x_axis->value()!=current_x) {
@@ -142,10 +155,76 @@ void MainWindow::on_btn_rescale_clicked() {
         ui->plot->xAxis->setRange(0,current_x);
         ui->plot->yAxis->setRange(-current_y,current_y);
 
+        // caso in cui allargo l'ascisse
+        if(current_x>previous_x) { }
+        // caso in cui current_x si trovi alla destra di vertline con i dati tutti in linea
+        else if(vertline_index+current_x<=previous_x) {
+            // elimino dati non compresi nell'intervallo [vertline_index,current_x]
+            while((this->list[this->channels].last()>=current_x+vertline_index) || (this->list[this->channels].last()<=vertline_index)) {
+                for(int i=0; i<=this->channels; i++) {
+                    this->list[i].pop_back();
+                }
+            }
+            // aggiorno asse x dei rimanenti dati
+            for(int i=0; i<this->list[this->channels].size(); i++) {
+                this->list[this->channels][i] = this->list[this->channels].value(i)-vertline_index;
+            }
+            // aggiorno posizione verline
+            vertline_index=0;
+        }
+        // nel caso in cui vertline si trovi a destra di current_x ed i dati son divisi
+        else if(vertline_index+current_x>previous_x) {
+            // elimino dati compresi nell'intervallo [current_x,vertline_index]
+            while(this->list[this->channels].last()>=(vertline_index+current_x-previous_x) ) {
+                for(int i=0; i<=this->channels; i++) {
+                    this->list[i].pop_back();
+                }
+            }
+            //aggiorno asse x dei rimanenti
+            for(int i=0; i<this->list[this->channels].size(); i++) {
+                double tmp = this->list[this->channels].value(i) - vertline_index;
+                if(tmp>=0) {
+                    this->list[this->channels][i] = tmp;
+                }
+                else {
+                    tmp+=previous_x;
+                    this->list[this->channels][i] = tmp;
+                }
+            }
+            // aggiorno posizione verline
+            vertline_index=0;
+
+        }
+        // graph update
+        for(int i=0;i<this->channels;i++) {
+            ui->plot->graph(i)->data().clear();
+            ui->plot->graph(i)->setData(this->list[this->channels],this->list[i]);
+        }
         // vertical line update
         ui->plot->graph(this->channels)->data()->clear();
         ui->plot->graph(this->channels)->addData(vertline_index,current_y);
         ui->plot->graph(this->channels)->addData(vertline_index,-current_y);
+    }
+    // graph update
+    ui->plot->replot();
+    ui->plot->update();
+}
+
+void MainWindow::on_btn_graph_clicked() {
+    if(ui->combo_graph->currentIndex()==this->channels) {
+        for(int i=0; i<this->channels; i++) {
+            ui->plot->graph(i)->setVisible(true);
+        }
+    }
+    else {
+        for(int i=0; i<this->channels; i++) {
+            if(i==ui->combo_graph->currentIndex()) {
+                ui->plot->graph(i)->setVisible(true);
+            }
+            else {
+                ui->plot->graph(i)->setVisible(false);
+            }
+        }
     }
     // aggiorno grafico
     ui->plot->replot();
