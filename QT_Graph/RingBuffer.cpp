@@ -30,8 +30,7 @@ namespace rbuf {
         this->allow_write=true;
     }
 
-    RingBuffer::~RingBuffer() {
-    }
+    RingBuffer::~RingBuffer() { }
 
     unsigned int RingBuffer::getSamples() {
         return this->nsamples;

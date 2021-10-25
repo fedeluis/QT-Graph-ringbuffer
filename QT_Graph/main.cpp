@@ -2,11 +2,11 @@
 #include "RingBuffer.hpp"
 #include <QApplication>
 #include <stdlib.h> // rand
-#include <unistd.h>
+#include "unistd.h"
 
-int channels = 4;
-int samples = 68;
-double freq = 4;
+int channels = 2;
+int samples = 24;
+double freq = 2;
 
 int main(int argc, char *argv[])
 {
@@ -35,11 +35,12 @@ int main(int argc, char *argv[])
 
         buffer.get(data_input);
 
+        //sleep(1000);
         //std::cout << data_input.data();
         w.plot(x_axis,data_input.data());
         x_axis+=1/freq;
+
     }
 
-    // aggiungo punti da w.data_x;
     return a.exec();
 }

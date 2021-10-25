@@ -1,11 +1,10 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "RingBuffer.hpp"
-#include <stdlib.h> // rand
 
 // salvo valori assi x ed y
 double current_x=10;   // 10 secondi
-int current_y=20;   // 20 microvolt
+int current_graph_spacer=15;
 
 bool buffer_isfull=false;   // false default
 double vertline_index=0;    //index for vertical line
@@ -36,6 +35,8 @@ void MainWindow::graphSetup() {
             "#A00000", "#00A000", "#0000A0", "#A0A000", "#A000A0", "#00A0A0", "#A0A0A0",
             "#E00000", "#00E000", "#0000E0", "#E0E000", "#E000E0", "#00E0E0", "#E0E0E0",
         };
+    // first item in combo box
+    ui->combo_graph->addItem("All");
 
     for(int i=0; i<this->channels; i++) {
         ui->plot->addGraph();
@@ -59,9 +60,6 @@ void MainWindow::graphSetup() {
     QVector<double> data_x;
     this->list.append(data_x);
 
-    // final item in combo box
-    ui->combo_graph->addItem("All");
-
     // vertical line for updating
     ui->plot->addGraph();
     ui->plot->graph(this->channels)->setScatterStyle(QCPScatterStyle::ssNone);
@@ -73,11 +71,11 @@ void MainWindow::graphSetup() {
     ui->plot->xAxis->setLabel("time");
     ui->plot->yAxis->setLabel("EEG signal");
     ui->plot->xAxis->setRange(0,current_x);
-    ui->plot->yAxis->setRange(-current_y,current_y);
+    ui->plot->yAxis->setRange(0,2*current_graph_spacer*this->channels);
 
     // vertical line
-    ui->plot->graph(this->channels)->addData(vertline_index,current_y);
-    ui->plot->graph(this->channels)->addData(vertline_index,-current_y);
+    ui->plot->graph(this->channels)->addData(vertline_index,2*current_graph_spacer*this->channels);
+    ui->plot->graph(this->channels)->addData(vertline_index,0);
 }
 
 
@@ -98,8 +96,8 @@ void MainWindow::plot(double x, double* y) {
         }
 
         vertline_index=0;
-        ui->plot->graph(this->channels)->addData(vertline_index,current_y);
-        ui->plot->graph(this->channels)->addData(vertline_index,-current_y);
+        ui->plot->graph(this->channels)->addData(vertline_index,2*current_graph_spacer*this->channels);
+        ui->plot->graph(this->channels)->addData(vertline_index,0);
     }
     // adding new points
     else {
@@ -121,24 +119,25 @@ void MainWindow::plot(double x, double* y) {
         // standard case
         this->list[this->channels].append(x);
         for(int i=0;i<this->channels;i++) {
-            this->list[i].append(y[i]);
+            this->list[i].append(y[i]+current_graph_spacer+i*2*current_graph_spacer);
             ui->plot->graph(i)->setData(this->list[this->channels],this->list[i]);
         }
 
         // vertical line update
         vertline_index=x;
         ui->plot->graph(this->channels)->data()->clear();
-        ui->plot->graph(this->channels)->addData(vertline_index,current_y);
-        ui->plot->graph(this->channels)->addData(vertline_index,-current_y);
+        ui->plot->graph(this->channels)->addData(vertline_index,2*current_graph_spacer*this->channels);
+        ui->plot->graph(this->channels)->addData(vertline_index,0);
     }
 
     ui->plot->replot();
-    ui->plot->update();
+    //ui->plot->update();
 }
 
 void MainWindow::on_btn_rescale_clicked() {
     bool axis_update=false;
     double previous_x=current_x;
+    int previous_graph_spacer=current_graph_spacer;
 
     // aggiornamento asse x
     if(ui->spin_x_axis->value()!=current_x) {
@@ -146,79 +145,85 @@ void MainWindow::on_btn_rescale_clicked() {
         axis_update=true;
     }
     // aggiornamento asse y
-    if(ui->spin_y_axis->value()!=current_y) {
-        current_y=ui->spin_y_axis->value();
+    if(ui->spin_y_axis->value()!=current_graph_spacer) {
+        current_graph_spacer=ui->spin_y_axis->value();
         axis_update=true;
     }
     // se ho cambiato qualcosa, aggiorno il range
     if(axis_update) {
         ui->plot->xAxis->setRange(0,current_x);
-        ui->plot->yAxis->setRange(-current_y,current_y);
+        ui->plot->yAxis->setRange(0,current_graph_spacer*2*this->channels);
 
-        // caso in cui allargo l'ascisse
+        // (I) caso in cui allargo l'ascisse
         if(current_x>previous_x) { }
-        // caso in cui current_x si trovi alla destra di vertline con i dati tutti in linea
-        else if(vertline_index+current_x<=previous_x) {
-            // elimino dati non compresi nell'intervallo [vertline_index,current_x]
-            while((this->list[this->channels].last()>=current_x+vertline_index) || (this->list[this->channels].last()<=vertline_index)) {
+        // (II) caso in cui restringo il range, ma i dati ci stanno nel nuovo range e buffer non è pieno
+        else if(!buffer_isfull && (vertline_index<current_x) ) { }
+        // (III) caso in cui non modifico l'asse x
+        else if(current_x==previous_x) { }
+        // (IV) caso in cui restringo il range e devo scartare dati (dati da salvare in linea)
+        else if(vertline_index>=current_x) {
+            // elimino dati non compresi nell'intervallo [vertline_index,vertline_index-current_x]
+            while( (this->list[this->channels].first()>=vertline_index) || (this->list[this->channels].first()<vertline_index-current_x) ) {
                 for(int i=0; i<=this->channels; i++) {
-                    this->list[i].pop_back();
+                    this->list[i].pop_front();
                 }
             }
             // aggiorno asse x dei rimanenti dati
             for(int i=0; i<this->list[this->channels].size(); i++) {
-                this->list[this->channels][i] = this->list[this->channels].value(i)-vertline_index;
+                this->list[this->channels][i] = this->list[this->channels].value(i)-(vertline_index-current_x);
             }
-            // aggiorno posizione verline
+            // aggiorno vertline
             vertline_index=0;
         }
-        // nel caso in cui vertline si trovi a destra di current_x ed i dati son divisi
-        else if(vertline_index+current_x>previous_x) {
-            // elimino dati compresi nell'intervallo [current_x,vertline_index]
-            while(this->list[this->channels].last()>=(vertline_index+current_x-previous_x) ) {
+        // (V) caso in cui i dati da salvare sono spezzati
+        else if(buffer_isfull && (vertline_index<current_x) ) {
+            // elimino dati compresi nell'intervallo [vertline_index,previous_x-(current_x-vertline_index)]
+            while( this->list[this->channels].first()<previous_x-(current_x-vertline_index) ) {
                 for(int i=0; i<=this->channels; i++) {
-                    this->list[i].pop_back();
+                    this->list[i].pop_front();
                 }
             }
-            //aggiorno asse x dei rimanenti
+            // aggiorno asse x dei rimanenti dati
             for(int i=0; i<this->list[this->channels].size(); i++) {
-                double tmp = this->list[this->channels].value(i) - vertline_index;
-                if(tmp>=0) {
-                    this->list[this->channels][i] = tmp;
-                }
-                else {
-                    tmp+=previous_x;
-                    this->list[this->channels][i] = tmp;
+                this->list[this->channels][i] = this->list[this->channels].value(i)+(current_x-vertline_index);
+
+                if(this->list[this->channels].value(i)>=previous_x) {
+                    this->list[this->channels][i] = this->list[this->channels].value(i)-previous_x;
                 }
             }
-            // aggiorno posizione verline
+            // aggiorno vertline
             vertline_index=0;
-
         }
+
         // graph update
         for(int i=0;i<this->channels;i++) {
-            ui->plot->graph(i)->data().clear();
+            ui->plot->graph(i)->data()->clear();
+
+            int list_size=this->list[i].size();
+            for(int j=0; j<list_size && (previous_graph_spacer!=current_graph_spacer); j++) {
+                this->list[i][j]=this->list[i][j]-previous_graph_spacer-i*2*previous_graph_spacer+current_graph_spacer+i*2*current_graph_spacer;
+            }
             ui->plot->graph(i)->setData(this->list[this->channels],this->list[i]);
         }
         // vertical line update
         ui->plot->graph(this->channels)->data()->clear();
-        ui->plot->graph(this->channels)->addData(vertline_index,current_y);
-        ui->plot->graph(this->channels)->addData(vertline_index,-current_y);
+        ui->plot->graph(this->channels)->addData(vertline_index,2*current_graph_spacer*this->channels);
+        ui->plot->graph(this->channels)->addData(vertline_index,0);
     }
     // graph update
     ui->plot->replot();
-    ui->plot->update();
+    //ui->plot->update();
 }
 
 void MainWindow::on_btn_graph_clicked() {
-    if(ui->combo_graph->currentIndex()==this->channels) {
+    if(ui->combo_graph->currentIndex()==0) {
         for(int i=0; i<this->channels; i++) {
             ui->plot->graph(i)->setVisible(true);
         }
     }
     else {
         for(int i=0; i<this->channels; i++) {
-            if(i==ui->combo_graph->currentIndex()) {
+            if(i==ui->combo_graph->currentIndex()-1) {
                 ui->plot->graph(i)->setVisible(true);
             }
             else {
@@ -228,7 +233,7 @@ void MainWindow::on_btn_graph_clicked() {
     }
     // aggiorno grafico
     ui->plot->replot();
-    ui->plot->update();
+    //ui->plot->update();
 }
 
 void MainWindow::setChannels(int n) {

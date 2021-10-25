@@ -31,7 +31,7 @@ public:
      */
     void setSamples(int n);
 
-    /*! \brief  Set up of graph' parameters
+    /*! \brief  Set up of graph's parameters
      */
     void graphSetup();
 
@@ -47,12 +47,13 @@ private:
 
     Ui::MainWindow *ui;
 
-    /*! \brief  Vectors where point are stored
-     */
-    //QVector<double> data_x, data_y;
     /*! \brief  List that contains data vectors
      */
     QList<QVector<double>> list;
+
+    /*! \brief  list that contains maxed size data vectors
+     */
+    QList<QVector<double>> max_list;
 
     /*! \brief  Number of channels
      */
