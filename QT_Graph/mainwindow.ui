@@ -149,11 +149,24 @@
       <x>140</x>
       <y>150</y>
       <width>91</width>
-      <height>51</height>
+      <height>61</height>
      </rect>
     </property>
     <property name="text">
      <string>Select graph</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="btn_plot">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>260</y>
+      <width>181</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Plot</string>
     </property>
    </widget>
   </widget>

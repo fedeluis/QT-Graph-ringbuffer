@@ -36,6 +36,7 @@ public:
     QLabel *label_3;
     QComboBox *combo_graph;
     QPushButton *btn_graph;
+    QPushButton *btn_plot;
     QStatusBar *statusbar;
 
     void setupUi(QMainWindow *MainWindow)
@@ -82,7 +83,10 @@ public:
         combo_graph->setGeometry(QRect(10, 180, 121, 25));
         btn_graph = new QPushButton(centralwidget);
         btn_graph->setObjectName(QString::fromUtf8("btn_graph"));
-        btn_graph->setGeometry(QRect(140, 150, 91, 51));
+        btn_graph->setGeometry(QRect(140, 150, 91, 61));
+        btn_plot = new QPushButton(centralwidget);
+        btn_plot->setObjectName(QString::fromUtf8("btn_plot"));
+        btn_plot->setGeometry(QRect(30, 260, 181, 25));
         MainWindow->setCentralWidget(centralwidget);
         statusbar = new QStatusBar(MainWindow);
         statusbar->setObjectName(QString::fromUtf8("statusbar"));
@@ -102,6 +106,7 @@ public:
         label_2->setText(QApplication::translate("MainWindow", "X Axis", nullptr));
         label_3->setText(QApplication::translate("MainWindow", "Y Axis", nullptr));
         btn_graph->setText(QApplication::translate("MainWindow", "Select graph", nullptr));
+        btn_plot->setText(QApplication::translate("MainWindow", "Plot", nullptr));
     } // retranslateUi
 
 };
